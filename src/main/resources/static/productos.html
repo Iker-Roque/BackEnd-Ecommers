@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Productos ECo</title>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container">
+            <a class="navbar-brand" href="/">ECo</a> 
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="productos.html">Productos</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoriasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Categorías
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="categoriasDropdown" id="categoriasDropdownMenu">
+                            <li><a class="dropdown-item" href="#">Cargando...</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 p-3 bg-light sidebar">
+                <h5>Filtros</h5>
+                <hr>
+                <div class="mb-3">
+                    <label for="categoriaFilter" class="form-label">Categoría</label>
+                    <select class="form-select" id="categoriaFilter">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-10 p-3">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="productosContainer">
+                    <p>Cargando productos...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api'; 
+
+        async function fetchProductos() {
+            const productosContainer = document.getElementById('productosContainer');
+            productosContainer.innerHTML = '<p>Cargando productos...</p>'; 
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/productos/listar`);
+                if (!response.ok) {
+                    throw new Error(`Error HTTP! estado: ${response.status}`);
+                }
+                const productos = await response.json();
+
+                console.log('Productos obtenidos:', productos); 
+
+                if (productos.length === 0) {
+                    productosContainer.innerHTML = '<p>No se encontraron productos.</p>';
+                    return;
+                }
+
+                productosContainer.innerHTML = ''; 
+				
+                productos.forEach(producto => {
+                    const productCard = `
+                        <div class="col">
+                            <div class="product-card">
+                                <!-- Usamos un placeholder de imagen. Reemplaza con tus URLs de imagen reales si las tienes. -->
+                                <img src="https://placehold.co/200x200/cccccc/333333?text=Producto" class="img-fluid product-img" alt="${producto.nombre}">
+                                <div>
+                                    <h6>${producto.nombre}</h6>
+                                    <span class="precio-descuento">S/ ${producto.precio.toFixed(2)}</span>
+                                    <p>Stock: ${producto.stock}</p>
+                                    <p>${producto.descripcion || ''}</p> <!-- Muestra la descripción, o vacío si no hay -->
+                                    <!-- Muestra el nombre de la categoría si está disponible en el objeto producto -->
+                                    <p class="etiqueta">${producto.categoria ? producto.categoria.nombre : 'Sin Categoría'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    productosContainer.insertAdjacentHTML('beforeend', productCard); 
+                });
+            } catch (error) {
+                console.error('Error al obtener productos:', error);
+                productosContainer.innerHTML = '<p class="text-danger">Error al cargar los productos. Por favor, intente de nuevo más tarde.</p>';
+            }
+        }
+
+        async function fetchCategorias() {
+            const categoriasDropdownMenu = document.getElementById('categoriasDropdownMenu');
+            const categoriaFilterSelect = document.getElementById('categoriaFilter');
+
+            categoriasDropdownMenu.innerHTML = '';
+            categoriaFilterSelect.innerHTML = '<option value="">Todas</option>'; 
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/categorias/listar`);
+                if (!response.ok) {
+                    throw new Error(`Error HTTP! estado: ${response.status}`);
+                }
+                const categorias = await response.json(); 
+
+                console.log('Categorías obtenidas:', categorias);
+
+                if (categorias.length === 0) {
+                    categoriasDropdownMenu.innerHTML = '<li><a class="dropdown-item" href="#">No hay categorías</a></li>';
+                    return;
+                }
+
+                categorias.forEach(categoria => {
+                    const dropdownItem = `<li><a class="dropdown-item" href="#" data-categoria-id="${categoria.idCategoria}">${categoria.nombre}</a></li>`;
+                    categoriasDropdownMenu.insertAdjacentHTML('beforeend', dropdownItem);
+
+                    const filterOption = `<option value="${categoria.idCategoria}">${categoria.nombre}</option>`;
+                    categoriaFilterSelect.insertAdjacentHTML('beforeend', filterOption);
+                });
+            } catch (error) {
+                console.error('Error al obtener categorías:', error);
+                categoriasDropdownMenu.innerHTML = '<li><a class="dropdown-item text-danger" href="#">Error al cargar categorías</a></li>';
+                categoriaFilterSelect.innerHTML = '<option value="">Error al cargar</option>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchCategorias(); 
+            fetchProductos();  
+        });
+    </script>
+</body>
+</html>

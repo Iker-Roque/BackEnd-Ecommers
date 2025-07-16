@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "8f04adb4-3470-4df0-b471-3bf73256bd87",
+		"name": "Productos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45382867",
+		"_collection_link": "https://fabiangarcia-2471547.postman.co/workspace/Fabian-Garcia's-Workspace~ea59bd02-6124-48a9-8942-8561520b9bcf/collection/45382867-8f04adb4-3470-4df0-b471-3bf73256bd87?action=share&source=collection_link&creator=45382867"
+	},
+	"item": [
+		{
+			"name": "getProductos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/productos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"productos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getproductosxID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/productos/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"productos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "insertarProductos",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombre\": \"Tablet\",\r\n  \"descripcion\": \"Tablet para niños\",\r\n  \"precio\": 300.0,\r\n  \"stock\": 20,\r\n  \"categoria\": {\r\n    \"idCategoria\": 1\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/productos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"productos"
+					],
+					"query": [
+						{
+							"key": "12",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateProductos",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"idProducto\": 6,\r\n    \"nombre\": \"Cámara\",\r\n    \"descripcion\": \"Cámara digital 4K actualizada\",\r\n    \"precio\": 499.99,\r\n    \"stock\": 10,\r\n    \"categoria\": {\r\n        \"idCategoria\": 1,\r\n        \"nombre\": \"Electrónica\"\r\n    }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/productos/6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"productos",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "eliminarProductos",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/productos/6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"productos",
+						"6"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
